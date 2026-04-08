@@ -170,6 +170,29 @@ src/
 
 ---
 
+## 2026-04-09: Alerts — Computed vs Persisted Design
+
+**Decision:** Alerts are fully computed on every GET from live stock data. Only manager actions (acknowledge/resolve) are persisted in `alerts.json`.
+
+**Rationale:** Storing pre-computed alert state would require keeping it in sync with stock changes. Computing on the fly guarantees accuracy — severity always reflects current stock. The only thing worth persisting is human intent (did someone act on this?).
+
+**Tradeoff:** A "Resolved" status does not auto-reset if stock drops again. Manager must re-resolve. This mirrors real alert system behaviour — silent auto-reset would hide recurring problems.
+
+**Acknowledge vs Resolve:** Both are status labels only — no automated side effects. Acknowledge = "I've seen this", Resolve = "I've acted on this". Future work could trigger purchase orders or supplier emails on Resolve.
+
+---
+
+## 2026-04-09: Reorder Formula
+
+**Decision:** `recommendedQty = max(0, (reorderPoint * 1.5) - currentStock + (dailyVelocity * leadTimeDays))`
+
+- Safety multiplier 1.5: restock to 150% of reorder point as buffer above minimum
+- dailyVelocity: outbound transfer units over last 30 days ÷ 30 (new products default to 0)
+- leadTimeDays: configurable per session via UI input (default 7), not persisted
+- Velocity is based on transfers between warehouses, not external sales — acknowledged limitation
+
+---
+
 ## 2026-04-07: Code Standards
 
 **Decision:** Follow YAGNI, DRY, KISS principles. No over-engineering.

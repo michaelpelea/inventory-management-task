@@ -66,6 +66,20 @@ fs.writeFileSync(stockPath, JSON.stringify(stock, null, 2));
 
 ---
 
+## Computed Alerts Pattern — Stateless Severity, Stateful Actions
+
+**Pattern:** When alert severity is derived from live data, compute it on every request rather than storing it. Only persist the parts that can't be recomputed — in this case, manager actions (acknowledge/resolve).
+
+**Why:** Storing computed severity creates a sync problem. Any stock change would require updating the alerts store too. Computing on the fly keeps a single source of truth.
+
+**How:** API reads products + stock + transfers on every GET, computes severity and recommended qty, then merges in saved actions from `alerts.json` at the end:
+```js
+const saved = savedAlerts.find(a => a.productId === product.id);
+const status = saved?.status || 'active';
+```
+
+---
+
 ## Atomic Commits — One Goal Per Commit
 
 **Rule:** One commit = one goal. Bundling unrelated files in one commit (e.g., Axios client + Zod schema in the same commit) violates the project standard.

@@ -14,10 +14,13 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
 } from '@mui/material';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import CategoryIcon from '@mui/icons-material/Category';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Layout from '@/components/Layout';
 import api from '@/lib/api';
 
@@ -25,18 +28,26 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [stock, setStock] = useState([]);
+  const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
     Promise.all([
       api.get('/api/products'),
       api.get('/api/warehouses'),
       api.get('/api/stock'),
-    ]).then(([productsRes, warehousesRes, stockRes]) => {
+      api.get('/api/alerts'),
+    ]).then(([productsRes, warehousesRes, stockRes, alertsRes]) => {
       setProducts(productsRes.data);
       setWarehouses(warehousesRes.data);
       setStock(stockRes.data);
+      setAlerts(alertsRes.data);
     });
   }, []);
+
+  // Items that need the manager's attention
+  const criticalCount = alerts.filter(a => a.severity === 'critical').length;
+  const lowCount = alerts.filter(a => a.severity === 'low').length;
+  const attentionCount = criticalCount + lowCount;
 
   // Calculate total inventory value
   const totalValue = stock.reduce((sum, item) => {
@@ -61,6 +72,54 @@ export default function Home() {
         <Typography variant="h4" component="h1" gutterBottom>
           Dashboard
         </Typography>
+
+        {/* Stock Alerts card — shown first because it drives immediate action */}
+        <Card
+          sx={{
+            mb: 3,
+            bgcolor: criticalCount > 0 ? 'error.main' : 'success.main',
+            color: 'white',
+          }}
+        >
+          <CardContent
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 2,
+              py: 2,
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              {attentionCount > 0
+                ? <WarningAmberIcon sx={{ fontSize: 36 }} />
+                : <CheckCircleIcon sx={{ fontSize: 36 }} />}
+              <Box>
+                <Typography variant="h5" fontWeight={700}>
+                  {attentionCount > 0
+                    ? `${attentionCount} item${attentionCount > 1 ? 's' : ''} need attention`
+                    : 'All stock healthy'}
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                  {criticalCount > 0
+                    ? `${criticalCount} critical, ${lowCount} low stock`
+                    : attentionCount > 0
+                      ? `${lowCount} low stock`
+                      : 'No critical or low stock alerts'}
+                </Typography>
+              </Box>
+            </Box>
+            <Button
+              component={Link}
+              href="/alerts"
+              variant="outlined"
+              sx={{ color: 'white', borderColor: 'rgba(255,255,255,0.7)', '&:hover': { borderColor: 'white' } }}
+            >
+              View Alerts →
+            </Button>
+          </CardContent>
+        </Card>
 
         {/* Summary Cards */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
