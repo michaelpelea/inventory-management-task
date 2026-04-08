@@ -38,11 +38,17 @@ Status of all tasks, open items, and blockers.
   - `src/pages/transfers/index.js` — form with available-stock helper + history table
 
 ### Task 3: Low Stock Alert & Reorder System
-- **Status:** Not Started
+- **Status:** Done
 - **Scope:** `data/alerts.json`, API endpoints, `/alerts` page, reorder formula, dashboard integration
-- **Open items:**
-  - Reorder formula proposed in `06-session-handover.md` -- needs user approval
-  - Severity thresholds proposed -- needs user approval
+- **Branch:** `feature/task-3-alerts-reorder` — PR open
+- **What was built:**
+  - `data/alerts.json` — seed file; persists only manager actions (acknowledge/resolve), not stock state
+  - `src/lib/schemas/alerts.js` — Zod schema for PUT status updates
+  - `src/pages/api/alerts/index.js` — GET: computes alerts live from stock/products/transfers; severity thresholds (critical ≤25%, low ≤100%, adequate ≤300%, overstocked >300% of reorderPoint); reorder formula with 30-day velocity window and configurable lead time
+  - `src/pages/api/alerts/[id].js` — PUT: persists acknowledge/resolve to alerts.json
+  - `src/pages/alerts/index.js` — 4 summary cards, lead time input (default 7 days, live recalc), color-coded table, action buttons
+  - `src/components/Layout.js` — added Alerts nav link
+  - `src/pages/index.js` — alert summary card at top of dashboard (red if critical, green if healthy, links to /alerts)
 
 ### Task 1: Dashboard Redesign
 - **Status:** Not Started
@@ -91,3 +97,4 @@ Status of all tasks, open items, and blockers.
 - [2026-04-08] `.claude/launch.json` created for dev server config (excluded from git via `.git/info/exclude`)
 - [2026-04-08] Task 4B complete: scaling analysis added to `README.md` — merged to main (`318990c`)
 - [2026-04-08] Task 2 complete: stock transfer system + all shared foundations merged to main via PR #4
+- [2026-04-09] Task 3 complete: low stock alert & reorder system — PR open on feature/task-3-alerts-reorder
