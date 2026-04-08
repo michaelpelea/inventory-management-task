@@ -38,3 +38,20 @@ fs.writeFileSync(stockPath, JSON.stringify(stock, null, 2));
 ```
 
 **Limitation:** This doesn't protect against process crash during `writeFileSync` itself, or concurrent requests. Acceptable for single-user assessment; document in scaling write-up.
+
+---
+
+## Dev Server Launch Config (`.claude/launch.json`)
+
+**Pattern:** Store dev server configs in `.claude/launch.json` for `preview_start`. Exclude it from git via `.git/info/exclude` (not `.gitignore`) so it stays local without polluting the tracked ignore file.
+
+**Key finding on macOS:** `npm` may not be on `$PATH` inside the preview runner. Use the full node binary path + local `.bin/next` to avoid "command not found":
+```json
+{
+  "runtimeExecutable": "/usr/local/bin/node",
+  "runtimeArgs": ["node_modules/.bin/next", "dev"],
+  "port": 3000
+}
+```
+
+**Also:** `node_modules` must exist before `preview_start` will succeed. Run `npm install` first if missing.

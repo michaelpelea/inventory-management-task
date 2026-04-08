@@ -9,10 +9,12 @@ Status of all tasks, open items, and blockers.
 ## Core Tasks
 
 ### Task 4A: Bug Fix
-- **Status:** Not Started
+- **Status:** Awaiting Review
 - **Scope:** Fix `parseInt` -> `parseFloat` for `unitCost` in `src/pages/api/products/[id].js:26`
-- **Notes:** Also add try-catch and basic validation while in this file
-- **Open items:** None
+- **Notes:** Also added try-catch, input validation (negative cost, bad reorderPoint, invalid ID), and split numeric field parsing explicitly per field
+- **Branch:** `bugfix/task-4a-unitcost-parseint`
+- **Commits:** `0e65050` (fix), `b1663b5` (data normalization)
+- **Open items:** Awaiting user manual test and approval
 
 ### Task 4B: Scaling Write-up
 - **Status:** Not Started
@@ -80,3 +82,5 @@ Status of all tasks, open items, and blockers.
 - [2026-04-07] Full codebase analysis completed (`.claude/docs/01-06`)
 - [2026-04-07] Implementation plan and session handover documented
 - [2026-04-07] CLAUDE.md created
+- [2026-04-08] Task 4A implemented (awaiting user approval): `parseFloat` fix + try-catch + validation in `src/pages/api/products/[id].js`
+- [2026-04-08] `.claude/launch.json` created for dev server config (excluded from git via `.git/info/exclude`)
