@@ -4,45 +4,66 @@ import path from 'path';
 
 export default function handler(req, res) {
   const { id } = req.query;
-  const filePath = path.join(process.cwd(), 'data', 'products.json');
-  const jsonData = fs.readFileSync(filePath);
-  let products = JSON.parse(jsonData);
+  const parsedId = parseInt(id, 10);
 
-  if (req.method === 'GET') {
-    const product = products.find((p) => p.id === parseInt(id));
-    if (product) {
-      res.status(200).json(product);
-    } else {
-      res.status(404).json({ message: 'Product not found' });
-    }
-  } else if (req.method === 'PUT') {
-    const index = products.findIndex((p) => p.id === parseInt(id));
-    if (index !== -1) {
-      // Sanitize numeric fields for data consistency
-      const numericFields = ['unitCost', 'reorderPoint'];
-      const sanitizedData = { ...req.body };
-      numericFields.forEach(field => {
-        if (sanitizedData[field] !== undefined) {
-          sanitizedData[field] = parseInt(sanitizedData[field]);
+  if (isNaN(parsedId)) {
+    return res.status(400).json({ message: 'Invalid product ID' });
+  }
+
+  const filePath = path.join(process.cwd(), 'data', 'products.json');
+
+  try {
+    const jsonData = fs.readFileSync(filePath);
+    let products = JSON.parse(jsonData);
+
+    if (req.method === 'GET') {
+      const product = products.find((p) => p.id === parsedId);
+      if (product) {
+        res.status(200).json(product);
+      } else {
+        res.status(404).json({ message: 'Product not found' });
+      }
+    } else if (req.method === 'PUT') {
+      const index = products.findIndex((p) => p.id === parsedId);
+      if (index !== -1) {
+        const sanitizedData = { ...req.body };
+
+        // unitCost is a decimal price — must use parseFloat, not parseInt
+        if (sanitizedData.unitCost !== undefined) {
+          sanitizedData.unitCost = parseFloat(sanitizedData.unitCost);
+          if (!isFinite(sanitizedData.unitCost) || sanitizedData.unitCost < 0) {
+            return res.status(400).json({ message: 'unitCost must be a non-negative number' });
+          }
         }
-      });
-      products[index] = { ...products[index], ...sanitizedData, id: parseInt(id) };
-      fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
-      res.status(200).json(products[index]);
+
+        // reorderPoint is a whole-number threshold
+        if (sanitizedData.reorderPoint !== undefined) {
+          sanitizedData.reorderPoint = parseInt(sanitizedData.reorderPoint, 10);
+          if (isNaN(sanitizedData.reorderPoint) || sanitizedData.reorderPoint < 0) {
+            return res.status(400).json({ message: 'reorderPoint must be a non-negative integer' });
+          }
+        }
+
+        products[index] = { ...products[index], ...sanitizedData, id: parsedId };
+        fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
+        res.status(200).json(products[index]);
+      } else {
+        res.status(404).json({ message: 'Product not found' });
+      }
+    } else if (req.method === 'DELETE') {
+      const index = products.findIndex((p) => p.id === parsedId);
+      if (index !== -1) {
+        products.splice(index, 1);
+        fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
+        res.status(204).end();
+      } else {
+        res.status(404).json({ message: 'Product not found' });
+      }
     } else {
-      res.status(404).json({ message: 'Product not found' });
+      res.status(405).json({ message: 'Method Not Allowed' });
     }
-  } else if (req.method === 'DELETE') {
-    const index = products.findIndex((p) => p.id === parseInt(id));
-    if (index !== -1) {
-      products.splice(index, 1);
-      fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
-      res.status(204).end();
-    } else {
-      res.status(404).json({ message: 'Product not found' });
-    }
-  } else {
-    res.status(405).json({ message: 'Method Not Allowed' });
+  } catch (err) {
+    console.error('[products/[id]] Unexpected error:', err);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
-
