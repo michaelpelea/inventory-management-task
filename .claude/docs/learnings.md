@@ -55,3 +55,19 @@ fs.writeFileSync(stockPath, JSON.stringify(stock, null, 2));
 ```
 
 **Also:** `node_modules` must exist before `preview_start` will succeed. Run `npm install` first if missing.
+
+---
+
+## MUI Select Click Behaviour in Preview
+
+**Problem:** Clicking a MUI Select dropdown by CSS selector (e.g. `[name="destinationWarehouseId"]`) in `preview_click` can mis-hit and trigger a Next.js Link navigation instead when the dropdown is near nav elements.
+
+**Solution:** Use `preview_eval` with an IIFE (`(async () => { ... })()`) to call the API directly for verification instead of driving the full form interaction. Reliable for confirming API correctness; the visual form flow is better left to manual testing.
+
+---
+
+## Atomic Commits — One Goal Per Commit
+
+**Rule:** One commit = one goal. Bundling unrelated files in one commit (e.g., Axios client + Zod schema in the same commit) violates the project standard.
+
+**How to apply:** Before staging, ask: "does every file in this commit serve the same single goal?" If not, split into multiple commits. This came up in Task 2 — `api.js` and `schemas/transfers.js` were committed together but should have been separate.
