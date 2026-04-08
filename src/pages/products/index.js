@@ -17,13 +17,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  AppBar,
-  Toolbar,
   Box,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import Layout from '@/components/Layout';
+import api from '@/lib/api';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -35,9 +34,7 @@ export default function Products() {
   }, []);
 
   const fetchProducts = () => {
-    fetch('/api/products')
-      .then((res) => res.json())
-      .then((data) => setProducts(data));
+    api.get('/api/products').then((res) => setProducts(res.data));
   };
 
   const handleClickOpen = (id) => {
@@ -52,51 +49,25 @@ export default function Products() {
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(`/api/products/${selectedProductId}`, {
-        method: 'DELETE',
-      });
-
-      if (res.ok) {
-        setProducts(products.filter((product) => product.id !== selectedProductId));
-        handleClose();
-      }
+      await api.delete(`/api/products/${selectedProductId}`);
+      setProducts(products.filter((product) => product.id !== selectedProductId));
+      handleClose();
     } catch (error) {
       console.error('Error deleting product:', error);
     }
   };
 
   return (
-    <>
-      <AppBar position="static">
-        <Toolbar>
-          <InventoryIcon sx={{ mr: 2 }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Inventory Management System
-          </Typography>
-          <Button color="inherit" component={Link} href="/">
-            Dashboard
-          </Button>
-          <Button color="inherit" component={Link} href="/products">
-            Products
-          </Button>
-          <Button color="inherit" component={Link} href="/warehouses">
-            Warehouses
-          </Button>
-          <Button color="inherit" component={Link} href="/stock">
-            Stock Levels
-          </Button>
-        </Toolbar>
-      </AppBar>
-
+    <Layout>
       <Container sx={{ mt: 4, mb: 4 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h4" component="h1">
             Products
           </Typography>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            component={Link} 
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
             href="/products/add"
           >
             Add Product
@@ -170,7 +141,6 @@ export default function Products() {
           </DialogActions>
         </Dialog>
       </Container>
-    </>
+    </Layout>
   );
 }
-

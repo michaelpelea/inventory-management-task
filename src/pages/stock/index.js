@@ -17,13 +17,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  AppBar,
-  Toolbar,
   Box,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import Layout from '@/components/Layout';
+import api from '@/lib/api';
 
 export default function Stock() {
   const [stock, setStock] = useState([]);
@@ -38,13 +37,13 @@ export default function Stock() {
 
   const fetchData = () => {
     Promise.all([
-      fetch('/api/stock').then(res => res.json()),
-      fetch('/api/products').then(res => res.json()),
-      fetch('/api/warehouses').then(res => res.json()),
-    ]).then(([stockData, productsData, warehousesData]) => {
-      setStock(stockData);
-      setProducts(productsData);
-      setWarehouses(warehousesData);
+      api.get('/api/stock'),
+      api.get('/api/products'),
+      api.get('/api/warehouses'),
+    ]).then(([stockRes, productsRes, warehousesRes]) => {
+      setStock(stockRes.data);
+      setProducts(productsRes.data);
+      setWarehouses(warehousesRes.data);
     });
   };
 
@@ -70,51 +69,25 @@ export default function Stock() {
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(`/api/stock/${selectedStockId}`, {
-        method: 'DELETE',
-      });
-
-      if (res.ok) {
-        setStock(stock.filter((item) => item.id !== selectedStockId));
-        handleClose();
-      }
+      await api.delete(`/api/stock/${selectedStockId}`);
+      setStock(stock.filter((item) => item.id !== selectedStockId));
+      handleClose();
     } catch (error) {
       console.error('Error deleting stock:', error);
     }
   };
 
   return (
-    <>
-      <AppBar position="static">
-        <Toolbar>
-          <InventoryIcon sx={{ mr: 2 }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Inventory Management System
-          </Typography>
-          <Button color="inherit" component={Link} href="/">
-            Dashboard
-          </Button>
-          <Button color="inherit" component={Link} href="/products">
-            Products
-          </Button>
-          <Button color="inherit" component={Link} href="/warehouses">
-            Warehouses
-          </Button>
-          <Button color="inherit" component={Link} href="/stock">
-            Stock Levels
-          </Button>
-        </Toolbar>
-      </AppBar>
-
+    <Layout>
       <Container sx={{ mt: 4, mb: 4 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h4" component="h1">
             Stock Levels
           </Typography>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            component={Link} 
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
             href="/stock/add"
           >
             Add Stock Record
@@ -184,7 +157,6 @@ export default function Stock() {
           </DialogActions>
         </Dialog>
       </Container>
-    </>
+    </Layout>
   );
 }
-

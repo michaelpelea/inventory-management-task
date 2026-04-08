@@ -17,13 +17,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  AppBar,
-  Toolbar,
   Box,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import Layout from '@/components/Layout';
+import api from '@/lib/api';
 
 export default function Warehouses() {
   const [warehouses, setWarehouses] = useState([]);
@@ -35,9 +34,7 @@ export default function Warehouses() {
   }, []);
 
   const fetchWarehouses = () => {
-    fetch('/api/warehouses')
-      .then((res) => res.json())
-      .then((data) => setWarehouses(data));
+    api.get('/api/warehouses').then((res) => setWarehouses(res.data));
   };
 
   const handleClickOpen = (id) => {
@@ -52,51 +49,25 @@ export default function Warehouses() {
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(`/api/warehouses/${selectedWarehouseId}`, {
-        method: 'DELETE',
-      });
-
-      if (res.ok) {
-        setWarehouses(warehouses.filter((warehouse) => warehouse.id !== selectedWarehouseId));
-        handleClose();
-      }
+      await api.delete(`/api/warehouses/${selectedWarehouseId}`);
+      setWarehouses(warehouses.filter((warehouse) => warehouse.id !== selectedWarehouseId));
+      handleClose();
     } catch (error) {
       console.error('Error deleting warehouse:', error);
     }
   };
 
   return (
-    <>
-      <AppBar position="static">
-        <Toolbar>
-          <InventoryIcon sx={{ mr: 2 }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Inventory Management System
-          </Typography>
-          <Button color="inherit" component={Link} href="/">
-            Dashboard
-          </Button>
-          <Button color="inherit" component={Link} href="/products">
-            Products
-          </Button>
-          <Button color="inherit" component={Link} href="/warehouses">
-            Warehouses
-          </Button>
-          <Button color="inherit" component={Link} href="/stock">
-            Stock Levels
-          </Button>
-        </Toolbar>
-      </AppBar>
-
+    <Layout>
       <Container sx={{ mt: 4, mb: 4 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h4" component="h1">
             Warehouses
           </Typography>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            component={Link} 
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
             href="/warehouses/add"
           >
             Add Warehouse
@@ -166,7 +137,6 @@ export default function Warehouses() {
           </DialogActions>
         </Dialog>
       </Container>
-    </>
+    </Layout>
   );
 }
-

@@ -23,11 +23,26 @@ Status of all tasks, open items, and blockers.
 - **Coverage:** JSON concurrency failures, transaction gaps, latency at scale; PostgreSQL + Prisma, Redis, MUI X DataGrid (targeted), NextAuth.js, audit log, Sentry, Elasticsearch, rate limiting
 
 ### Task 2: Stock Transfer System
-- **Status:** Not Started
+- **Status:** Awaiting Review
 - **Scope:** `data/transfers.json`, API endpoints, `/transfers` page, atomic operations
-- **Open items:**
-  - Transfer data schema to be finalized
-  - Atomicity approach documented in `06-session-handover.md`
+- **Branch:** `feature/task-2-stock-transfers` — open for review
+- **Commits:**
+  - `71f5ecd` feat: add MUI eco theme and wrap app with ThemeProvider
+  - `6cabe43` feat: add Axios api client and Zod transfer schema
+  - `7faab81` feat: add shared Layout component with active-route nav highlighting
+  - `03de1fd` feat: migrate all pages to shared Layout and Axios api client
+  - `3cb5a4b` feat: add transfers API with atomic stock update
+  - `9749bbb` feat: add stock transfer page with form and history table
+- **What was built:**
+  - `src/theme.js` — eco MUI theme (forest green primary, consistent status colors)
+  - `src/pages/_app.js` — wrapped with ThemeProvider + CssBaseline
+  - `src/lib/api.js` — Axios instance with error interceptor
+  - `src/lib/schemas/transfers.js` — Zod schema shared between API and form
+  - `src/components/Layout.js` — shared AppBar with active-route highlighting
+  - All 10 existing page files migrated to Layout + Axios
+  - `data/transfers.json` — empty array
+  - `src/pages/api/transfers/index.js` — GET (sorted newest-first) + POST (atomic, validated)
+  - `src/pages/transfers/index.js` — form with available-stock helper + history table
 
 ### Task 3: Low Stock Alert & Reorder System
 - **Status:** Not Started
@@ -48,24 +63,20 @@ Status of all tasks, open items, and blockers.
 ## Cross-Cutting Work (Shared Foundations -- Do Before New Features)
 
 ### Axios API Client (`src/lib/api.js`)
-- **Status:** Not Started
-- **Scope:** Centralized Axios instance, replace 25 existing raw `fetch()` calls
-- **Notes:** Refactor as we touch each page, not as a separate pass
+- **Status:** Done (delivered as part of Task 2)
+- **Scope:** Centralized Axios instance, replaced all 25 raw `fetch()` calls across existing pages
 
 ### Shared Layout Component (`src/components/Layout.js`)
-- **Status:** Not Started
-- **Scope:** Extract duplicated AppBar into shared layout
-- **Notes:** Do before building new pages (transfers, alerts)
+- **Status:** Done (delivered as part of Task 2)
+- **Scope:** Shared AppBar with active-route highlighting; all 10 existing pages migrated
 
 ### Zod Validation Schemas (`src/lib/schemas/`)
-- **Status:** Not Started
-- **Scope:** One schema file per resource: products, warehouses, stock, transfers, alerts
-- **Notes:** Use in API routes for server-side validation
+- **Status:** Partial — `transfers.js` done; products/warehouses/stock/alerts schemas still pending
+- **Notes:** Remaining schemas can be added when each resource's API is revisited
 
 ### Custom MUI Theme (`src/theme.js`)
-- **Status:** Not Started
-- **Scope:** Eco-friendly green palette, wrap app with ThemeProvider
-- **Notes:** Do before dashboard redesign (Task 1)
+- **Status:** Done (delivered as part of Task 2)
+- **Scope:** Forest green primary, consistent error/warning/success/info tokens, touch-friendly button sizing
 
 ### Input Validation & Error Handling
 - **Status:** Not Started
@@ -86,3 +97,4 @@ Status of all tasks, open items, and blockers.
 - [2026-04-08] Task 4A complete: `parseFloat` fix + try-catch + validation in `src/pages/api/products/[id].js` — merged via PR #1
 - [2026-04-08] `.claude/launch.json` created for dev server config (excluded from git via `.git/info/exclude`)
 - [2026-04-08] Task 4B complete: scaling analysis added to `README.md` — merged to main (`318990c`)
+- [2026-04-08] Task 2 in review: stock transfer system + all shared foundations built on `feature/task-2-stock-transfers`
