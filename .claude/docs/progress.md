@@ -16,10 +16,11 @@ Status of all tasks, open items, and blockers.
 - **Commits:** `0e65050` (fix), `b1663b5` (data normalization)
 
 ### Task 4B: Scaling Write-up
-- **Status:** In Progress
-- **Scope:** Add 1-2 paragraphs to README about scaling to 500 warehouses / 10k products / 50 users
-- **Branch:** `feature/task-4b-scaling-writeup`
-- **Open items:** None
+- **Status:** Done
+- **Scope:** Add scaling analysis section to README covering what breaks first and how to evolve the architecture
+- **Branch:** `feature/task-4b-scaling-writeup` — merged to main
+- **Commit:** `318990c`
+- **Coverage:** JSON concurrency failures, transaction gaps, latency at scale; PostgreSQL + Prisma, Redis, MUI X DataGrid (targeted), NextAuth.js, audit log, Sentry, Elasticsearch, rate limiting
 
 ### Task 2: Stock Transfer System
 - **Status:** Not Started
@@ -84,3 +85,4 @@ Status of all tasks, open items, and blockers.
 - [2026-04-07] CLAUDE.md created
 - [2026-04-08] Task 4A complete: `parseFloat` fix + try-catch + validation in `src/pages/api/products/[id].js` — merged via PR #1
 - [2026-04-08] `.claude/launch.json` created for dev server config (excluded from git via `.git/info/exclude`)
+- [2026-04-08] Task 4B complete: scaling analysis added to `README.md` — merged to main (`318990c`)
