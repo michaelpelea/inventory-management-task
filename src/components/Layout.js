@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { label: 'Warehouses', href: '/warehouses' },
   { label: 'Stock', href: '/stock' },
   { label: 'Transfers', href: '/transfers' },
+  { label: 'Alerts', href: '/alerts' },
 ];
 
 // Shared layout wrapper used by every page.
