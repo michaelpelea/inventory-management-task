@@ -8,12 +8,11 @@ import {
   Button,
   Box,
   Paper,
-  AppBar,
-  Toolbar,
   MenuItem,
   CircularProgress,
 } from '@mui/material';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import Layout from '@/components/Layout';
+import api from '@/lib/api';
 
 export default function EditStock() {
   const [stock, setStock] = useState({
@@ -31,13 +30,13 @@ export default function EditStock() {
   useEffect(() => {
     if (id) {
       Promise.all([
-        fetch(`/api/stock/${id}`).then(res => res.json()),
-        fetch('/api/products').then(res => res.json()),
-        fetch('/api/warehouses').then(res => res.json()),
-      ]).then(([stockData, productsData, warehousesData]) => {
-        setStock(stockData);
-        setProducts(productsData);
-        setWarehouses(warehousesData);
+        api.get(`/api/stock/${id}`),
+        api.get('/api/products'),
+        api.get('/api/warehouses'),
+      ]).then(([stockRes, productsRes, warehousesRes]) => {
+        setStock(stockRes.data);
+        setProducts(productsRes.data);
+        setWarehouses(warehousesRes.data);
         setLoading(false);
       });
     }
@@ -49,17 +48,15 @@ export default function EditStock() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch(`/api/stock/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    try {
+      await api.put(`/api/stock/${id}`, {
         productId: parseInt(stock.productId),
         warehouseId: parseInt(stock.warehouseId),
         quantity: parseInt(stock.quantity),
-      }),
-    });
-    if (res.ok) {
+      });
       router.push('/stock');
+    } catch (error) {
+      console.error('Error updating stock:', error);
     }
   };
 
@@ -72,28 +69,7 @@ export default function EditStock() {
   }
 
   return (
-    <>
-      <AppBar position="static">
-        <Toolbar>
-          <InventoryIcon sx={{ mr: 2 }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Inventory Management System
-          </Typography>
-          <Button color="inherit" component={Link} href="/">
-            Dashboard
-          </Button>
-          <Button color="inherit" component={Link} href="/products">
-            Products
-          </Button>
-          <Button color="inherit" component={Link} href="/warehouses">
-            Warehouses
-          </Button>
-          <Button color="inherit" component={Link} href="/stock">
-            Stock Levels
-          </Button>
-        </Toolbar>
-      </AppBar>
-
+    <Layout>
       <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
         <Paper elevation={3} sx={{ p: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
@@ -164,7 +140,6 @@ export default function EditStock() {
           </Box>
         </Paper>
       </Container>
-    </>
+    </Layout>
   );
 }
-

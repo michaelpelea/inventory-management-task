@@ -7,7 +7,6 @@ import {
   Grid,
   Card,
   CardContent,
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -15,12 +14,12 @@ import {
   TableHead,
   TableRow,
   Paper,
-  AppBar,
-  Toolbar,
 } from '@mui/material';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import CategoryIcon from '@mui/icons-material/Category';
+import Layout from '@/components/Layout';
+import api from '@/lib/api';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -28,15 +27,14 @@ export default function Home() {
   const [stock, setStock] = useState([]);
 
   useEffect(() => {
-    // Fetch all data
     Promise.all([
-      fetch('/api/products').then(res => res.json()),
-      fetch('/api/warehouses').then(res => res.json()),
-      fetch('/api/stock').then(res => res.json()),
-    ]).then(([productsData, warehousesData, stockData]) => {
-      setProducts(productsData);
-      setWarehouses(warehousesData);
-      setStock(stockData);
+      api.get('/api/products'),
+      api.get('/api/warehouses'),
+      api.get('/api/stock'),
+    ]).then(([productsRes, warehousesRes, stockRes]) => {
+      setProducts(productsRes.data);
+      setWarehouses(warehousesRes.data);
+      setStock(stockRes.data);
     });
   }, []);
 
@@ -58,25 +56,7 @@ export default function Home() {
   });
 
   return (
-    <>
-      <AppBar position="static">
-        <Toolbar>
-          <InventoryIcon sx={{ mr: 2 }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Inventory Management System
-          </Typography>
-          <Button color="inherit" component={Link} href="/products">
-            Products
-          </Button>
-          <Button color="inherit" component={Link} href="/warehouses">
-            Warehouses
-          </Button>
-          <Button color="inherit" component={Link} href="/stock">
-            Stock Levels
-          </Button>
-        </Toolbar>
-      </AppBar>
-
+    <Layout>
       <Container sx={{ mt: 4, mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Dashboard
@@ -137,10 +117,10 @@ export default function Home() {
             </TableHead>
             <TableBody>
               {inventoryOverview.map((item) => (
-                <TableRow 
+                <TableRow
                   key={item.id}
-                  sx={{ 
-                    backgroundColor: item.isLowStock ? '#fff3e0' : 'inherit' 
+                  sx={{
+                    backgroundColor: item.isLowStock ? '#fff3e0' : 'inherit'
                   }}
                 >
                   <TableCell>{item.sku}</TableCell>
@@ -165,7 +145,6 @@ export default function Home() {
           </Table>
         </TableContainer>
       </Container>
-    </>
+    </Layout>
   );
 }
-
