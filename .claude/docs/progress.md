@@ -23,16 +23,9 @@ Status of all tasks, open items, and blockers.
 - **Coverage:** JSON concurrency failures, transaction gaps, latency at scale; PostgreSQL + Prisma, Redis, MUI X DataGrid (targeted), NextAuth.js, audit log, Sentry, Elasticsearch, rate limiting
 
 ### Task 2: Stock Transfer System
-- **Status:** Awaiting Review
+- **Status:** Done
 - **Scope:** `data/transfers.json`, API endpoints, `/transfers` page, atomic operations
-- **Branch:** `feature/task-2-stock-transfers` — open for review
-- **Commits:**
-  - `71f5ecd` feat: add MUI eco theme and wrap app with ThemeProvider
-  - `6cabe43` feat: add Axios api client and Zod transfer schema
-  - `7faab81` feat: add shared Layout component with active-route nav highlighting
-  - `03de1fd` feat: migrate all pages to shared Layout and Axios api client
-  - `3cb5a4b` feat: add transfers API with atomic stock update
-  - `9749bbb` feat: add stock transfer page with form and history table
+- **Branch:** `feature/task-2-stock-transfers` — merged via PR michaelpelea/inventory-management-task#4
 - **What was built:**
   - `src/theme.js` — eco MUI theme (forest green primary, consistent status colors)
   - `src/pages/_app.js` — wrapped with ThemeProvider + CssBaseline
@@ -40,7 +33,7 @@ Status of all tasks, open items, and blockers.
   - `src/lib/schemas/transfers.js` — Zod schema shared between API and form
   - `src/components/Layout.js` — shared AppBar with active-route highlighting
   - All 10 existing page files migrated to Layout + Axios
-  - `data/transfers.json` — empty array
+  - `data/transfers.json` — empty seed file
   - `src/pages/api/transfers/index.js` — GET (sorted newest-first) + POST (atomic, validated)
   - `src/pages/transfers/index.js` — form with available-stock helper + history table
 
@@ -97,4 +90,4 @@ Status of all tasks, open items, and blockers.
 - [2026-04-08] Task 4A complete: `parseFloat` fix + try-catch + validation in `src/pages/api/products/[id].js` — merged via PR #1
 - [2026-04-08] `.claude/launch.json` created for dev server config (excluded from git via `.git/info/exclude`)
 - [2026-04-08] Task 4B complete: scaling analysis added to `README.md` — merged to main (`318990c`)
-- [2026-04-08] Task 2 in review: stock transfer system + all shared foundations built on `feature/task-2-stock-transfers`
+- [2026-04-08] Task 2 complete: stock transfer system + all shared foundations merged to main via PR #4
