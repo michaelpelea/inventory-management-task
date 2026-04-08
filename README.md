@@ -294,4 +294,14 @@ Good luck! 💪
 
 ---
 
+## Scaling Analysis
+
+The biggest weakness at scale is how the app stores data. Right now, every request reads a full JSON file, changes it in memory, and saves the whole thing back with no locking. If two users make changes at the same time, one of them silently overwrites the other. Transfers are especially risky: if the server crashes halfway through, stock gets deducted from one warehouse but never added to the other, leaving the inventory in a broken state with no way to recover automatically. On top of that, loading a file with 10,000 products or 500 warehouses on every single request will noticeably slow the app down as the data grows.
+
+The most important upgrade is replacing JSON files with a real database like PostgreSQL using Prisma as the interface. This fixes the core problems: multiple users can work at the same time without stepping on each other, transfers either complete fully or roll back automatically if something goes wrong, and queries run fast with proper indexes. Connection pooling via pgBouncer or Prisma's built-in option handles the extra traffic. Once the database is solid, Redis can store the results of expensive calculations like total inventory value so the dashboard does not recompute them on every visit. For tables with hundreds or thousands of rows, replacing the standard MUI Table with MUI X DataGrid adds row virtualization so only the visible rows load in the browser at once. This is worth doing for the products and stock tables specifically, not as a blanket change. When the team grows and different users need different access levels, NextAuth.js handles login and permissions without building that from scratch. An audit log table tracks who moved what stock and when, which is essential for tracing discrepancies.
+
+A few more additions become necessary as the system matures. Structured logging and an error tracker like Sentry make it possible to catch production issues before users report them. For searching across thousands of products by name, SKU, or category, Elasticsearch handles fast and flexible queries that a standard database struggles with at volume. Rate limiting on the API endpoints prevents accidental overload and protects against basic abuse.
+
+---
+
 **Setup issues?** Verify Node.js is installed and you're using a modern browser. If problems persist, document them in your submission.
