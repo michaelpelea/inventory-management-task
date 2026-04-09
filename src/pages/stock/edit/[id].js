@@ -10,6 +10,8 @@ import {
   Paper,
   MenuItem,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import Layout from '@/components/Layout';
 import api from '@/lib/api';
@@ -23,6 +25,8 @@ export default function EditStock() {
   const [products, setProducts] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const router = useRouter();
   const { id } = router.query;
@@ -48,15 +52,18 @@ export default function EditStock() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
       await api.put(`/api/stock/${id}`, {
-        productId: parseInt(stock.productId),
+        productId:   parseInt(stock.productId),
         warehouseId: parseInt(stock.warehouseId),
-        quantity: parseInt(stock.quantity),
+        quantity:    parseInt(stock.quantity),
       });
       router.push('/stock');
     } catch (error) {
-      console.error('Error updating stock:', error);
+      setErrorMsg(error.response?.data?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -125,14 +132,16 @@ export default function EditStock() {
                 fullWidth
                 variant="contained"
                 color="primary"
+                disabled={submitting}
               >
-                Update Stock
+                {submitting ? 'Saving...' : 'Update Stock'}
               </Button>
               <Button
                 fullWidth
                 variant="outlined"
                 component={Link}
                 href="/stock"
+                disabled={submitting}
               >
                 Cancel
               </Button>
@@ -140,6 +149,17 @@ export default function EditStock() {
           </Box>
         </Paper>
       </Container>
+
+      <Snackbar
+        open={!!errorMsg}
+        autoHideDuration={6000}
+        onClose={() => setErrorMsg('')}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity="error" onClose={() => setErrorMsg('')} sx={{ width: '100%' }}>
+          {errorMsg}
+        </Alert>
+      </Snackbar>
     </Layout>
   );
 }

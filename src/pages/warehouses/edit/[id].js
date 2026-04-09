@@ -9,6 +9,8 @@ import {
   Box,
   Paper,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import Layout from '@/components/Layout';
 import api from '@/lib/api';
@@ -20,6 +22,8 @@ export default function EditWarehouse() {
     code: '',
   });
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const router = useRouter();
   const { id } = router.query;
@@ -39,11 +43,14 @@ export default function EditWarehouse() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
       await api.put(`/api/warehouses/${id}`, warehouse);
       router.push('/warehouses');
     } catch (error) {
-      console.error('Error updating warehouse:', error);
+      setErrorMsg(error.response?.data?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -96,14 +103,16 @@ export default function EditWarehouse() {
                 fullWidth
                 variant="contained"
                 color="primary"
+                disabled={submitting}
               >
-                Update Warehouse
+                {submitting ? 'Saving...' : 'Update Warehouse'}
               </Button>
               <Button
                 fullWidth
                 variant="outlined"
                 component={Link}
                 href="/warehouses"
+                disabled={submitting}
               >
                 Cancel
               </Button>
@@ -111,6 +120,17 @@ export default function EditWarehouse() {
           </Box>
         </Paper>
       </Container>
+
+      <Snackbar
+        open={!!errorMsg}
+        autoHideDuration={6000}
+        onClose={() => setErrorMsg('')}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity="error" onClose={() => setErrorMsg('')} sx={{ width: '100%' }}>
+          {errorMsg}
+        </Alert>
+      </Snackbar>
     </Layout>
   );
 }

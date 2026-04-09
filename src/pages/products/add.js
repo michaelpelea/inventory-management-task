@@ -8,6 +8,8 @@ import {
   Button,
   Box,
   Paper,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import Layout from '@/components/Layout';
 import api from '@/lib/api';
@@ -20,6 +22,8 @@ export default function AddProduct() {
     unitCost: '',
     reorderPoint: '',
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const router = useRouter();
 
@@ -29,15 +33,18 @@ export default function AddProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
       await api.post('/api/products', {
         ...product,
-        unitCost: parseFloat(product.unitCost),
+        unitCost:     parseFloat(product.unitCost),
         reorderPoint: parseInt(product.reorderPoint),
       });
       router.push('/products');
     } catch (error) {
-      console.error('Error adding product:', error);
+      setErrorMsg(error.response?.data?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -104,14 +111,16 @@ export default function AddProduct() {
                 fullWidth
                 variant="contained"
                 color="primary"
+                disabled={submitting}
               >
-                Add Product
+                {submitting ? 'Adding...' : 'Add Product'}
               </Button>
               <Button
                 fullWidth
                 variant="outlined"
                 component={Link}
                 href="/products"
+                disabled={submitting}
               >
                 Cancel
               </Button>
@@ -119,6 +128,17 @@ export default function AddProduct() {
           </Box>
         </Paper>
       </Container>
+
+      <Snackbar
+        open={!!errorMsg}
+        autoHideDuration={6000}
+        onClose={() => setErrorMsg('')}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity="error" onClose={() => setErrorMsg('')} sx={{ width: '100%' }}>
+          {errorMsg}
+        </Alert>
+      </Snackbar>
     </Layout>
   );
 }
