@@ -98,7 +98,7 @@ export default function Alerts() {
       <Container sx={{ mt: 4, mb: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
           <WarningAmberIcon color="warning" />
-          <Typography variant="h4" component="h1">
+          <Typography variant="h4" component="h1" gutterBottom fontWeight={700}>
             Stock Alerts
           </Typography>
         </Box>
@@ -152,17 +152,17 @@ export default function Alerts() {
             </Typography>
           </Paper>
         ) : (
-          <TableContainer component={Paper}>
-            <Table>
+          <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
+            <Table sx={{ minWidth: 340 }}>
               <TableHead>
                 <TableRow>
                   <TableCell><strong>Product</strong></TableCell>
-                  <TableCell><strong>SKU</strong></TableCell>
-                  <TableCell align="right"><strong>Total Stock</strong></TableCell>
-                  <TableCell align="right"><strong>Reorder Point</strong></TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}><strong>SKU</strong></TableCell>
+                  <TableCell align="right"><strong>Stock</strong></TableCell>
+                  <TableCell align="right" sx={{ display: { xs: 'none', md: 'table-cell' } }}><strong>Reorder Point</strong></TableCell>
                   <TableCell><strong>Severity</strong></TableCell>
-                  <TableCell align="right"><strong>Recommended Order</strong></TableCell>
-                  <TableCell><strong>Status</strong></TableCell>
+                  <TableCell align="right" sx={{ display: { xs: 'none', sm: 'table-cell' } }}><strong>Order Qty</strong></TableCell>
+                  <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}><strong>Status</strong></TableCell>
                   <TableCell><strong>Actions</strong></TableCell>
                 </TableRow>
               </TableHead>
@@ -178,18 +178,18 @@ export default function Alerts() {
                   return (
                     <TableRow key={alert.productId} sx={rowSx}>
                       <TableCell>{alert.productName}</TableCell>
-                      <TableCell sx={{ color: 'text.secondary' }}>{alert.sku}</TableCell>
+                      <TableCell sx={{ color: 'text.secondary', display: { xs: 'none', sm: 'table-cell' } }}>{alert.sku}</TableCell>
                       <TableCell align="right"><strong>{alert.totalStock.toLocaleString()}</strong></TableCell>
-                      <TableCell align="right">{alert.reorderPoint.toLocaleString()}</TableCell>
+                      <TableCell align="right" sx={{ display: { xs: 'none', md: 'table-cell' } }}>{alert.reorderPoint.toLocaleString()}</TableCell>
                       <TableCell>
                         <Chip label={sev.label} color={sev.color} size="small" />
                       </TableCell>
-                      <TableCell align="right">
+                      <TableCell align="right" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
                         {alert.recommendedQuantity > 0
                           ? <strong>{alert.recommendedQuantity.toLocaleString()}</strong>
                           : <span style={{ color: '#aaa' }}>—</span>}
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
                         <Chip label={sta.label} color={sta.color} size="small" variant="outlined" />
                       </TableCell>
                       <TableCell>

@@ -80,6 +80,91 @@ const status = saved?.status || 'active';
 
 ---
 
+## Recharts PieChart Blank Render in Next.js
+
+**Problem:** `PieChart` renders blank (legend appears, no sectors visible) even though data is loaded and the SVG has the correct dimensions.
+
+**Root cause:** Two combined issues:
+1. `innerRadius="45%"` / `outerRadius="68%"` as percentage strings don't recalculate correctly after `ResponsiveContainer` resolves its width — Recharts computes them relative to the initial 10×10 placeholder size.
+2. `isAnimationActive` defaults to `true` — the animation draws sectors over ~400ms; screenshots/initial render captures the frame before paths are painted.
+
+**Fix:**
+```jsx
+<Pie
+  innerRadius={65}     // fixed px, not "%"
+  outerRadius={100}    // fixed px, not "%"
+  isAnimationActive={false}
+  ...
+/>
+```
+
+**Note:** `BarChart` / `Bar` don't suffer the percentage-radius issue because bars use the full axis range, not radial geometry. `isAnimationActive={false}` is fine for a data dashboard — the animation adds no user value.
+
+---
+
+## npm Not on PATH in Preview Runner
+
+**Problem:** `npm install recharts` fails with "command not found: npm".
+
+**Fix:** Run npm via its full path using the node binary:
+```bash
+NODE_PATH=/usr/local/bin /usr/local/bin/node /usr/local/lib/node_modules/npm/bin/npm-cli.js install recharts
+```
+
+---
+
+## Responsive Header Button Pattern
+
+**Problem:** Action buttons in page headers ("Add Product", "Add Warehouse") wrap to a new line on mobile but then left-align, leaving a gap and looking broken.
+
+**Solution:** Use `flexWrap: 'wrap'` on the header Box and `ml: 'auto'` on the button. The button right-aligns in a single row on desktop, and right-aligns independently when wrapping to a new row on mobile.
+
+```jsx
+<Box sx={{ display: 'flex', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+  <Typography variant="h4" ...>Page Title</Typography>
+  <Button sx={{ ml: 'auto', whiteSpace: 'nowrap', flexShrink: 0 }}>
+    Add Item
+  </Button>
+</Box>
+```
+
+**Anti-pattern to avoid:** `justifyContent: 'space-between'` breaks when wrapping — the button ends up full-width on a second row instead of right-aligned.
+
+---
+
+## Responsive Table Columns — Progressive Disclosure
+
+**Pattern:** On mobile, show only the minimum columns needed to identify and act. Reveal more at larger breakpoints.
+
+```jsx
+// Always visible
+<TableCell>Product Name</TableCell>
+
+// Visible at sm+
+<TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>SKU</TableCell>
+
+// Visible at md+
+<TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>Category</TableCell>
+```
+
+**Also add to the Table itself for compact mobile padding:**
+```jsx
+<TableContainer sx={{ overflowX: 'auto' }}>
+  <Table sx={{ minWidth: 300, '& .MuiTableCell-root': { px: { xs: 1, sm: 2 } } }}>
+```
+
+---
+
+## Uniform Typography Standards (Established 2026-04-09)
+
+**Agreed standards across all pages:**
+- Page heading: `<Typography variant="h4" component="h1" gutterBottom fontWeight={700}>`
+- Section heading (within a page/card): `<Typography variant="h6" fontWeight={600} gutterBottom>`
+- Container margins: `sx={{ mt: 4, mb: 4 }}` — consistent on all pages
+- Form Paper padding: `sx={{ p: 4 }}` on desktop; responsive `p: { xs: 2, sm: 3, md: 4 }` for mobile-heavy pages
+
+---
+
 ## Atomic Commits — One Goal Per Commit
 
 **Rule:** One commit = one goal. Bundling unrelated files in one commit (e.g., Axios client + Zod schema in the same commit) violates the project standard.

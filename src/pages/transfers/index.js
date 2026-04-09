@@ -167,16 +167,16 @@ export default function Transfers() {
   return (
     <Layout>
       <Container sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography variant="h4" component="h1" gutterBottom fontWeight={700}>
           Stock Transfers
         </Typography>
 
         {/* Transfer Form */}
         <Card sx={{ mb: 4 }}>
-          <CardContent sx={{ p: 3 }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
               <SwapHorizIcon color="primary" />
-              <Typography variant="h5">Transfer Stock Between Warehouses</Typography>
+              <Typography variant="h6" fontWeight={600} gutterBottom>Transfer Stock Between Warehouses</Typography>
             </Box>
 
             <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -279,7 +279,7 @@ export default function Transfers() {
                   size="large"
                   disabled={submitting}
                   startIcon={submitting ? <CircularProgress size={18} color="inherit" /> : <SwapHorizIcon />}
-                  sx={{ minWidth: 180 }}
+                  sx={{ minWidth: 180, width: { xs: '100%', sm: 'auto' } }}
                 >
                   {submitting ? 'Transferring…' : 'Transfer Stock'}
                 </Button>
@@ -289,7 +289,7 @@ export default function Transfers() {
         </Card>
 
         {/* Transfer History Table */}
-        <Typography variant="h5" gutterBottom>
+        <Typography variant="h6" fontWeight={600} gutterBottom>
           Transfer History
         </Typography>
 
@@ -300,35 +300,37 @@ export default function Transfers() {
             </Typography>
           </Paper>
         ) : (
-          <TableContainer component={Paper}>
-            <Table>
+          <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
+            <Table sx={{ minWidth: 300 }}>
               <TableHead>
                 <TableRow>
                   <TableCell><strong>Date</strong></TableCell>
                   <TableCell><strong>Product</strong></TableCell>
-                  <TableCell><strong>From → To</strong></TableCell>
-                  <TableCell align="right"><strong>Quantity</strong></TableCell>
-                  <TableCell><strong>Status</strong></TableCell>
-                  <TableCell><strong>Notes</strong></TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}><strong>From → To</strong></TableCell>
+                  <TableCell align="right"><strong>Qty</strong></TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}><strong>Status</strong></TableCell>
+                  <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}><strong>Notes</strong></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {transfers.map(t => (
                   <TableRow key={t.id}>
                     <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                      {dayjs(t.createdAt).format('MMM D, YYYY h:mm A')}
+                      {/* Short date on mobile, full timestamp on desktop */}
+                      <Box sx={{ display: { xs: 'block', sm: 'none' } }}>{dayjs(t.createdAt).format('MMM D')}</Box>
+                      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>{dayjs(t.createdAt).format('MMM D, YYYY h:mm A')}</Box>
                     </TableCell>
                     <TableCell>{getProductName(t.productId)}</TableCell>
-                    <TableCell>
+                    <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
                       {getWarehouseName(t.sourceWarehouseId)}
                       {' → '}
                       {getWarehouseName(t.destinationWarehouseId)}
                     </TableCell>
                     <TableCell align="right"><strong>{t.quantity}</strong></TableCell>
-                    <TableCell>
+                    <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
                       <Chip label="Completed" color="success" size="small" />
                     </TableCell>
-                    <TableCell sx={{ color: 'text.secondary' }}>{t.notes || '—'}</TableCell>
+                    <TableCell sx={{ color: 'text.secondary', display: { xs: 'none', md: 'table-cell' } }}>{t.notes || '—'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
