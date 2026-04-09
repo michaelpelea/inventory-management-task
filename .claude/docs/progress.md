@@ -40,7 +40,7 @@ Status of all tasks, open items, and blockers.
 ### Task 3: Low Stock Alert & Reorder System
 - **Status:** Done
 - **Scope:** `data/alerts.json`, API endpoints, `/alerts` page, reorder formula, dashboard integration
-- **Branch:** `feature/task-3-alerts-reorder` — PR open
+- **Branch:** `feature/task-3-alerts-reorder` — merged via PR michaelpelea/inventory-management-task#5
 - **What was built:**
   - `data/alerts.json` — seed file; persists only manager actions (acknowledge/resolve), not stock state
   - `src/lib/schemas/alerts.js` — Zod schema for PUT status updates
@@ -51,9 +51,9 @@ Status of all tasks, open items, and blockers.
   - `src/pages/index.js` — alert summary card at top of dashboard (red if critical, green if healthy, links to /alerts)
 
 ### Task 1: Dashboard Redesign
-- **Status:** Awaiting Review
+- **Status:** Done
 - **Scope:** Charts, metrics cards, responsive layout, loading states, eco theme, uniform spacing/typography
-- **Branch:** `feature/task-1-dashboard-redesign` — PR open
+- **Branch:** `feature/task-1-dashboard-redesign` — merged via PR michaelpelea/inventory-management-task#6
 - **What was built:**
   - 4 metric cards (Stock Alerts, Inventory Value, Products, Warehouses) — Alerts card red/orange/green, links to /alerts
   - Recharts donut chart (stock by category) + horizontal bar chart (stock by warehouse)
@@ -116,5 +116,6 @@ Status of all tasks, open items, and blockers.
 - [2026-04-08] `.claude/launch.json` created for dev server config (excluded from git via `.git/info/exclude`)
 - [2026-04-08] Task 4B complete: scaling analysis added to `README.md` — merged to main (`318990c`)
 - [2026-04-08] Task 2 complete: stock transfer system + all shared foundations merged to main via PR #4
-- [2026-04-09] Task 3 complete: low stock alert & reorder system — PR open on feature/task-3-alerts-reorder
-- [2026-04-09] Task 1 complete: dashboard redesign, responsive nav/buttons, uniform spacing/typography across all 12 pages — PR open on feature/task-1-dashboard-redesign
+- [2026-04-09] Task 3 complete: low stock alert & reorder system — merged via PR #5
+- [2026-04-09] Task 1 complete: dashboard redesign, responsive nav/buttons, uniform spacing/typography across all 12 pages — merged via PR #6
+- [2026-04-09] All core tasks complete — main branch is fully up to date
