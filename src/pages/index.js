@@ -175,7 +175,7 @@ export default function Home() {
 
   return (
     <Layout>
-      <Container sx={{ mt: 3, mb: 5 }}>
+      <Container sx={{ mt: 4, mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom fontWeight={700}>
           Dashboard
         </Typography>

@@ -167,16 +167,16 @@ export default function Transfers() {
   return (
     <Layout>
       <Container sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography variant="h4" component="h1" gutterBottom fontWeight={700}>
           Stock Transfers
         </Typography>
 
         {/* Transfer Form */}
         <Card sx={{ mb: 4 }}>
-          <CardContent sx={{ p: 3 }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
               <SwapHorizIcon color="primary" />
-              <Typography variant="h5">Transfer Stock Between Warehouses</Typography>
+              <Typography variant="h6" fontWeight={600} gutterBottom>Transfer Stock Between Warehouses</Typography>
             </Box>
 
             <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -289,7 +289,7 @@ export default function Transfers() {
         </Card>
 
         {/* Transfer History Table */}
-        <Typography variant="h5" gutterBottom>
+        <Typography variant="h6" fontWeight={600} gutterBottom>
           Transfer History
         </Typography>
 

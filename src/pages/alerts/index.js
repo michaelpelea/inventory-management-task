@@ -98,7 +98,7 @@ export default function Alerts() {
       <Container sx={{ mt: 4, mb: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
           <WarningAmberIcon color="warning" />
-          <Typography variant="h4" component="h1">
+          <Typography variant="h4" component="h1" gutterBottom fontWeight={700}>
             Stock Alerts
           </Typography>
         </Box>

@@ -61,7 +61,7 @@ export default function Warehouses() {
     <Layout>
       <Container sx={{ mt: 4, mb: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
-          <Typography variant="h4" component="h1">
+          <Typography variant="h4" component="h1" gutterBottom fontWeight={700}>
             Warehouses
           </Typography>
           <Button
@@ -75,8 +75,8 @@ export default function Warehouses() {
           </Button>
         </Box>
 
-        <TableContainer component={Paper}>
-          <Table>
+        <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
+          <Table sx={{ minWidth: 300, '& .MuiTableCell-root': { px: { xs: 1, sm: 2 } } }}>
             <TableHead>
               <TableRow>
                 <TableCell><strong>Code</strong></TableCell>
