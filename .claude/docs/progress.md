@@ -115,6 +115,18 @@ Status of all tasks, open items, and blockers.
 
 ---
 
+## In Progress
+
+### Form Error Feedback
+- **Status:** In Progress
+- **Branch:** `feature/form-error-feedback` — pushed, PR pending
+- **What was done:**
+  - All 6 add/edit forms (products, warehouses, stock) now show API errors in a bottom-center Snackbar
+  - Submit button disabled + relabelled ("Adding..."/"Saving...") while request is in flight — prevents double-submit
+  - `error.response?.data?.message` used so plain-language API messages surface exactly as written
+
+---
+
 ## Completed Items
 - [2026-04-07] Full codebase analysis completed (`.claude/docs/01-06`)
 - [2026-04-07] Implementation plan and session handover documented
@@ -127,3 +139,4 @@ Status of all tasks, open items, and blockers.
 - [2026-04-09] Task 1 complete: dashboard redesign, responsive nav/buttons, uniform spacing/typography across all 12 pages — merged via PR #6
 - [2026-04-09] All core tasks complete — main branch is fully up to date
 - [2026-04-09] Polish: Zod schemas + validation + error handling + referential integrity across all API routes — merged via PR #7
+- [2026-04-09] Form error feedback: Snackbar errors + submitting state on all 6 add/edit forms — branch feature/form-error-feedback
