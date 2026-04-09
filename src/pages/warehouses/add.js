@@ -8,6 +8,8 @@ import {
   Button,
   Box,
   Paper,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import Layout from '@/components/Layout';
 import api from '@/lib/api';
@@ -18,6 +20,8 @@ export default function AddWarehouse() {
     location: '',
     code: '',
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const router = useRouter();
 
@@ -27,11 +31,14 @@ export default function AddWarehouse() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
       await api.post('/api/warehouses', warehouse);
       router.push('/warehouses');
     } catch (error) {
-      console.error('Error adding warehouse:', error);
+      setErrorMsg(error.response?.data?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -76,14 +83,16 @@ export default function AddWarehouse() {
                 fullWidth
                 variant="contained"
                 color="primary"
+                disabled={submitting}
               >
-                Add Warehouse
+                {submitting ? 'Adding...' : 'Add Warehouse'}
               </Button>
               <Button
                 fullWidth
                 variant="outlined"
                 component={Link}
                 href="/warehouses"
+                disabled={submitting}
               >
                 Cancel
               </Button>
@@ -91,6 +100,17 @@ export default function AddWarehouse() {
           </Box>
         </Paper>
       </Container>
+
+      <Snackbar
+        open={!!errorMsg}
+        autoHideDuration={6000}
+        onClose={() => setErrorMsg('')}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity="error" onClose={() => setErrorMsg('')} sx={{ width: '100%' }}>
+          {errorMsg}
+        </Alert>
+      </Snackbar>
     </Layout>
   );
 }
