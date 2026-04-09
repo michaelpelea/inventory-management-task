@@ -80,6 +80,39 @@ const status = saved?.status || 'active';
 
 ---
 
+## Recharts PieChart Blank Render in Next.js
+
+**Problem:** `PieChart` renders blank (legend appears, no sectors visible) even though data is loaded and the SVG has the correct dimensions.
+
+**Root cause:** Two combined issues:
+1. `innerRadius="45%"` / `outerRadius="68%"` as percentage strings don't recalculate correctly after `ResponsiveContainer` resolves its width — Recharts computes them relative to the initial 10×10 placeholder size.
+2. `isAnimationActive` defaults to `true` — the animation draws sectors over ~400ms; screenshots/initial render captures the frame before paths are painted.
+
+**Fix:**
+```jsx
+<Pie
+  innerRadius={65}     // fixed px, not "%"
+  outerRadius={100}    // fixed px, not "%"
+  isAnimationActive={false}
+  ...
+/>
+```
+
+**Note:** `BarChart` / `Bar` don't suffer the percentage-radius issue because bars use the full axis range, not radial geometry. `isAnimationActive={false}` is fine for a data dashboard — the animation adds no user value.
+
+---
+
+## npm Not on PATH in Preview Runner
+
+**Problem:** `npm install recharts` fails with "command not found: npm".
+
+**Fix:** Run npm via its full path using the node binary:
+```bash
+NODE_PATH=/usr/local/bin /usr/local/bin/node /usr/local/lib/node_modules/npm/bin/npm-cli.js install recharts
+```
+
+---
+
 ## Atomic Commits — One Goal Per Commit
 
 **Rule:** One commit = one goal. Bundling unrelated files in one commit (e.g., Axios client + Zod schema in the same commit) violates the project standard.

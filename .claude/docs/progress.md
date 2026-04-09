@@ -51,11 +51,22 @@ Status of all tasks, open items, and blockers.
   - `src/pages/index.js` — alert summary card at top of dashboard (red if critical, green if healthy, links to /alerts)
 
 ### Task 1: Dashboard Redesign
-- **Status:** Not Started
+- **Status:** Awaiting Review
 - **Scope:** Charts, metrics cards, responsive layout, loading states, eco theme
-- **Open items:**
-  - Charting library choice (recharts proposed)
-  - Layout design proposed in `06-session-handover.md` -- needs user approval
+- **Branch:** `feature/task-1-dashboard-redesign` — PR open
+- **What was built:**
+  - 4 metric cards (Stock Alerts, Inventory Value, Products, Warehouses) — Alerts card red/orange/green, links to /alerts
+  - Recharts donut chart (stock by category) + horizontal bar chart (stock by warehouse)
+  - Recent Transfers section (5 most recent, "View All →" link to /transfers)
+  - Enhanced inventory table: search bar, status chips (Critical/Low/In Stock/Overstocked), colored left border on problem rows, bold stock numbers with reorder point context
+  - Loading skeletons for all sections while data fetches
+  - Error state with Retry button if any API call fails
+  - Mobile-first: stacked single column on xs, charts side-by-side at md+
+  - Mobile table: SKU hidden xs (shows sm+), Category hidden xs/sm (shows md+) — Name/Stock/Status always visible
+  - Fixed PieChart blank render: px radii instead of %, isAnimationActive=false
+- **Decisions made:**
+  - Alert as 4th metric card (not banner) — confirmed by user
+  - Mobile-first layout — confirmed by user
 
 ---
 
