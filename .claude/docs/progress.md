@@ -89,17 +89,24 @@ Status of all tasks, open items, and blockers.
 - **Scope:** Shared AppBar with active-route highlighting; all 10 existing pages migrated
 
 ### Zod Validation Schemas (`src/lib/schemas/`)
-- **Status:** Partial — `transfers.js` done; products/warehouses/stock/alerts schemas still pending
-- **Notes:** Remaining schemas can be added when each resource's API is revisited
+- **Status:** Done
+- **Scope:** All 5 resource schemas complete: `transfers.js`, `alerts.js`, `products.js`, `warehouses.js`, `stock.js`
 
 ### Custom MUI Theme (`src/theme.js`)
 - **Status:** Done (delivered as part of Task 2)
 - **Scope:** Forest green primary, consistent error/warning/success/info tokens, touch-friendly button sizing
 
 ### Input Validation & Error Handling
-- **Status:** Not Started
-- **Scope:** Add try-catch + Zod validation to all 6 existing API files + all new endpoints
-- **Notes:** Do per-endpoint as we touch each file, not as a separate pass
+- **Status:** Done
+- **Scope:** All API files have try-catch + Zod validation + FK checks + referential integrity
+- **Branch:** `feature/polish-validation-error-handling` — in progress
+- **What was done:**
+  - `products/index.js` — try-catch, Zod validation, duplicate SKU check (409)
+  - `products/[id].js` — DELETE referential integrity: blocks delete if stock records exist (409)
+  - `warehouses/index.js` — try-catch, Zod validation, duplicate code check (409)
+  - `warehouses/[id].js` — try-catch, ID validation, Zod on PUT, duplicate code check, DELETE referential integrity (409)
+  - `stock/index.js` — try-catch, Zod validation, FK checks (product + warehouse), duplicate pair check (409)
+  - `stock/[id].js` — try-catch, ID validation, Zod on PUT, FK checks, duplicate pair check (excludes self)
 
 ---
 
@@ -119,3 +126,4 @@ Status of all tasks, open items, and blockers.
 - [2026-04-09] Task 3 complete: low stock alert & reorder system — merged via PR #5
 - [2026-04-09] Task 1 complete: dashboard redesign, responsive nav/buttons, uniform spacing/typography across all 12 pages — merged via PR #6
 - [2026-04-09] All core tasks complete — main branch is fully up to date
+- [2026-04-09] Polish: Zod schemas + validation + error handling + referential integrity across all API routes — branch feature/polish-validation-error-handling

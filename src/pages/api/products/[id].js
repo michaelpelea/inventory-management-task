@@ -2,6 +2,8 @@
 import fs from 'fs';
 import path from 'path';
 
+const stockPath = path.join(process.cwd(), 'data', 'stock.json');
+
 export default function handler(req, res) {
   const { id } = req.query;
   const parsedId = parseInt(id, 10);
@@ -52,13 +54,21 @@ export default function handler(req, res) {
       }
     } else if (req.method === 'DELETE') {
       const index = products.findIndex((p) => p.id === parsedId);
-      if (index !== -1) {
-        products.splice(index, 1);
-        fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
-        res.status(204).end();
-      } else {
-        res.status(404).json({ message: 'Product not found' });
+      if (index === -1) {
+        return res.status(404).json({ message: 'Product not found' });
       }
+
+      // Referential integrity: prevent delete if stock records reference this product
+      const stock = JSON.parse(fs.readFileSync(stockPath));
+      if (stock.some(s => s.productId === parsedId)) {
+        return res.status(409).json({
+          message: 'Cannot delete this product — it has stock records. Remove all stock records first.',
+        });
+      }
+
+      products.splice(index, 1);
+      fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
+      res.status(204).end();
     } else {
       res.status(405).json({ message: 'Method Not Allowed' });
     }
