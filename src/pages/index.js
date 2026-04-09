@@ -314,9 +314,10 @@ export default function Home() {
                         nameKey="name"
                         cx="50%"
                         cy="45%"
-                        innerRadius="45%"
-                        outerRadius="68%"
+                        innerRadius={65}
+                        outerRadius={100}
                         paddingAngle={3}
+                        isAnimationActive={false}
                       >
                         {categoryChartData.map((entry, i) => (
                           <Cell key={entry.name} fill={CHART_COLORS[i % CHART_COLORS.length]} />
@@ -480,13 +481,14 @@ export default function Home() {
         {loading ? (
           <Skeleton variant="rounded" height={240} />
         ) : (
-          <TableContainer component={Paper}>
-            <Table>
+          <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
+            {/* Tighter cell padding on mobile so all 3 visible columns fit without scrolling */}
+            <Table sx={{ minWidth: 300, '& .MuiTableCell-root': { px: { xs: 1, sm: 2 } } }}>
               <TableHead>
                 <TableRow>
-                  <TableCell><strong>SKU</strong></TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}><strong>SKU</strong></TableCell>
                   <TableCell><strong>Product Name</strong></TableCell>
-                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                  <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
                     <strong>Category</strong>
                   </TableCell>
                   <TableCell align="right"><strong>Stock / Reorder</strong></TableCell>
@@ -511,11 +513,11 @@ export default function Home() {
                           borderLeft: `4px solid ${ROW_BORDER[item.severity] || 'transparent'}`,
                         }}
                       >
-                        <TableCell sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                        <TableCell sx={{ fontFamily: 'monospace', fontSize: '0.85rem', display: { xs: 'none', sm: 'table-cell' } }}>
                           {item.sku}
                         </TableCell>
                         <TableCell>{item.name}</TableCell>
-                        <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                        <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
                           {item.category}
                         </TableCell>
                         <TableCell align="right">
