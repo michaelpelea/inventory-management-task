@@ -99,7 +99,7 @@ Status of all tasks, open items, and blockers.
 ### Input Validation & Error Handling
 - **Status:** Done
 - **Scope:** All API files have try-catch + Zod validation + FK checks + referential integrity
-- **Branch:** `feature/polish-validation-error-handling` — in progress
+- **Branch:** `feature/polish-validation-error-handling` — merged via PR michaelpelea/inventory-management-task#7
 - **What was done:**
   - `products/index.js` — try-catch, Zod validation, duplicate SKU check (409)
   - `products/[id].js` — DELETE referential integrity: blocks delete if stock records exist (409)
@@ -126,4 +126,4 @@ Status of all tasks, open items, and blockers.
 - [2026-04-09] Task 3 complete: low stock alert & reorder system — merged via PR #5
 - [2026-04-09] Task 1 complete: dashboard redesign, responsive nav/buttons, uniform spacing/typography across all 12 pages — merged via PR #6
 - [2026-04-09] All core tasks complete — main branch is fully up to date
-- [2026-04-09] Polish: Zod schemas + validation + error handling + referential integrity across all API routes — branch feature/polish-validation-error-handling
+- [2026-04-09] Polish: Zod schemas + validation + error handling + referential integrity across all API routes — merged via PR #7
