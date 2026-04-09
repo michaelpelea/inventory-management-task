@@ -60,7 +60,7 @@ export default function Warehouses() {
   return (
     <Layout>
       <Container sx={{ mt: 4, mb: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
           <Typography variant="h4" component="h1">
             Warehouses
           </Typography>
@@ -69,6 +69,7 @@ export default function Warehouses() {
             color="primary"
             component={Link}
             href="/warehouses/add"
+            sx={{ ml: 'auto', whiteSpace: 'nowrap', flexShrink: 0, minHeight: { xs: 36, sm: 44 } }}
           >
             Add Warehouse
           </Button>
